@@ -1,0 +1,53 @@
+name: go
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  golangci-lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        golangci_lint: [v1.55.2]
+        golang: [1.21.4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.golang }}
+      - name: input workaround
+        run: for d in year*/*; do touch "$d/input.txt"; done
+      - uses: golangci/golangci-lint-action@v3
+        with:
+          version: ${{ matrix.golangci_lint }}
+          args: --timeout=2m
+          only-new-issues: false
+          working-directory: .
+  tests:
+    needs: golangci-lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        golang: [1.21.4]
+    env:
+      OS: ubuntu-latest
+      GOLANG: ${{ matrix.golang }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.golang }}
+      - uses: actions/cache@v3.3.2
+        with:
+          path: ~/go/pkg/mod
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-v1-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-v1-
+      - name: input workaround
+        run: for d in year*/*; do touch "$d/input.txt"; done
+      - name: Run tests
+        run: |
+          go install gotest.tools/gotestsum@latest
+          gotestsum -f github-actions
