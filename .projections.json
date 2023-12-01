@@ -1,0 +1,5 @@
+{
+  "*.go": {
+    "alternate": "{dirname}/{basename}_test.go"
+  }
+}
