@@ -7,24 +7,26 @@ import (
 )
 
 const (
-	EXAMPLE_ONE string = `1abc2
+	ExampleOne string = `1abc2
 pqr3stu8vwx
 a1b2c3d4e5f
 treb7uchet`
-	EXAMPLE_TWO string = `two1nine
+	ExampleTwo string = `two1nine
 eightwothree
 abcone2threexyz
 xtwone3four
 4nineeightseven2
 zoneight234
 7pqrstsixteen`
-	EXAMPLE_ONE_ANSWER int = 142
-	EXAMPLE_TWO_ANSWER int = 281
+	ExampleOneAnswer int = 142
+	ExampleTwoAnswer int = 281
 )
 
 func TestParseInputToGroups(t *testing.T) {
-	parsedInput, _ := parseInputToNumbers(EXAMPLE_ONE, false)
-	assert.ElementsMatch(t, []int{12, 38, 15, 77}, parsedInput, "Elements in parsed input were unexpected")
+	parsedInput, err := parseInputToNumbers(ExampleOne, false)
+	if assert.NoError(t, err, "input parsing failed") {
+		assert.ElementsMatch(t, []int{12, 38, 15, 77}, parsedInput, "Elements in parsed input were unexpected")
+	}
 }
 
 func TestAnswers(t *testing.T) {
@@ -36,14 +38,14 @@ func TestAnswers(t *testing.T) {
 	}{
 		{
 			name:     "example one answer",
-			input:    EXAMPLE_ONE,
-			answer:   EXAMPLE_ONE_ANSWER,
+			input:    ExampleOne,
+			answer:   ExampleOneAnswer,
 			useWords: false,
 		},
 		{
 			name:     "example two answer",
-			input:    EXAMPLE_TWO,
-			answer:   EXAMPLE_TWO_ANSWER,
+			input:    ExampleTwo,
+			answer:   ExampleTwoAnswer,
 			useWords: true,
 		},
 	}

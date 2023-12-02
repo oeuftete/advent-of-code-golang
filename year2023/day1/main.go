@@ -1,8 +1,10 @@
+// Solve Advent of Code, 2023, day 1
 package main
 
 import (
 	_ "embed"
 	"fmt"
+	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -10,21 +12,25 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var digitMap = map[string]int{
-	"one":   1,
-	"two":   2,
-	"three": 3,
-	"four":  4,
-	"five":  5,
-	"six":   6,
-	"seven": 7,
-	"eight": 8,
-	"nine":  9,
+var digitWords = []string{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
+
+type notFoundError struct {
+	input string
+	msg   string
+}
+
+func (e *notFoundError) Error() string {
+	return fmt.Sprintf("%s: [%s]", e.msg, e.input)
 }
 
 func nConvert(s string) int {
 	var n int
 	var ok bool
+	digitMap := make(map[string]int)
+
+	for idx, w := range digitWords {
+		digitMap[w] = idx + 1
+	}
 
 	if n, ok = digitMap[s]; ok {
 		return n
@@ -47,11 +53,17 @@ func parseInputToNumbers(in string, useWords bool) ([]int, error) {
 		// Find first
 		var re *regexp.Regexp
 		if useWords {
-			re = regexp.MustCompile(`\d|one|two|three|four|five|six|seven|eight|nine`)
+			re = regexp.MustCompile(`\d|` + strings.Join(digitWords, "|"))
 		} else {
 			re = regexp.MustCompile(`\d`)
 		}
 		firstString := re.Find([]byte(inputString))
+		if firstString == nil {
+			return nil, &notFoundError{
+				input: inputString,
+				msg:   "No first string found",
+			}
+		}
 		first = nConvert(string(firstString))
 
 		// Find last
@@ -60,7 +72,7 @@ func parseInputToNumbers(in string, useWords bool) ([]int, error) {
 
 		digits := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}
 		if useWords {
-			digits = append(digits, "one", "two", "three", "four", "five", "six", "seven", "eight", "nine")
+			digits = append(digits, digitWords...)
 		}
 
 		for _, d := range digits {
@@ -70,10 +82,16 @@ func parseInputToNumbers(in string, useWords bool) ([]int, error) {
 				lastString = d
 			}
 		}
+		if lastString == "" {
+			return nil, &notFoundError{
+				input: inputString,
+				msg:   "No last string found",
+			}
+		}
 		last = nConvert(lastString)
 
 		log.Info().Msgf("  Parsed first and last: (%d, %d)", first, last)
-		parsedInts[idx] = 10*first + last
+		parsedInts[idx] = int(math.Pow10(1))*first + last
 	}
 	log.Info().Msgf("All values: %d", parsedInts)
 	return parsedInts, nil
