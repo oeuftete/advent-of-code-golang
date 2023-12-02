@@ -47,6 +47,26 @@ func (g *Game) isPossible(contents GameTurn) bool {
 	return true
 }
 
+func (g *Game) power() int {
+	var power int
+
+	var minimumSet GameTurn
+
+	for _, turn := range g.turns {
+		if turn.red > minimumSet.red {
+			minimumSet.red = turn.red
+		}
+		if turn.green > minimumSet.green {
+			minimumSet.green = turn.green
+		}
+		if turn.blue > minimumSet.blue {
+			minimumSet.blue = turn.blue
+		}
+	}
+	power = minimumSet.red * minimumSet.green * minimumSet.blue
+	return power
+}
+
 func parseInputToGames(in string) ([]Game, error) {
 	inputStrings := strings.Split(strings.TrimSpace(in), "\n")
 	parsedGames := make([]Game, len(inputStrings))
@@ -122,6 +142,7 @@ func answers(in string) (int, int) {
 		if g.isPossible(*gameResult) {
 			answerA += g.id
 		}
+		answerB += g.power()
 	}
 
 	return answerA, answerB
