@@ -49,7 +49,6 @@ func (g *Game) isPossible(contents GameTurn) bool {
 
 func (g *Game) power() int {
 	var power int
-
 	var minimumSet GameTurn
 
 	for _, turn := range g.turns {
@@ -93,7 +92,7 @@ func parseInputToGames(in string) ([]Game, error) {
 		for _, turnString := range strings.Split(string(m[2]), "; ") {
 			var turn GameTurn
 			for _, colorCount := range strings.Split(turnString, ", ") {
-				sp := strings.Split(colorCount, " ")
+				sp := strings.Fields(colorCount)
 				n, _ := strconv.Atoi(sp[0])
 				color := sp[1]
 
