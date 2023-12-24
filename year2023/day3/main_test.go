@@ -19,6 +19,7 @@ const (
 ...$.*....
 .664.598..`
 	ExampleOneAnswerA int = 4361
+	ExampleOneAnswerB int = 467835
 )
 
 func TestParseSchematic(t *testing.T) {
@@ -38,18 +39,21 @@ func TestAnswers(t *testing.T) {
 		name    string
 		input   string
 		answerA int
+		answerB int
 	}{
 		{
 			name:    "example one answer",
 			input:   ExampleOne,
 			answerA: ExampleOneAnswerA,
+			answerB: ExampleOneAnswerB,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			answerA, _ := answers(test.input)
+			answerA, answerB := answers(test.input)
 			assert.Equal(t, test.answerA, answerA, "Answer A incorrect")
+			assert.Equal(t, test.answerB, answerB, "Answer B incorrect")
 		})
 	}
 }
