@@ -9,18 +9,10 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/oeuftete/advent-of-code-golang/utils"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/exp/maps"
 )
-
-// TODO: extract to helper.
-func makeRange(min, max int) []int {
-	a := make([]int, max-min+1)
-	for i := range a {
-		a[i] = min + i
-	}
-	return a
-}
 
 type GameCard struct {
 	id      int
@@ -102,7 +94,7 @@ func moreCardsGame(gameCards []GameCard) (score int) {
 	for _, gameCard := range gameCards {
 		nWinners := gameCard.nWinners()
 		for i := 0; i < gameCardMap[gameCard.id].copies; i++ {
-			for _, j := range makeRange(gameCard.id+1, gameCard.id+nWinners) {
+			for _, j := range utils.MakeRange(gameCard.id+1, gameCard.id+nWinners) {
 				nCopies := gameCardMap[j].copies + 1
 				gameCardMap[j] = GameCardSlot{gameCardMap[j].gc, nCopies}
 			}

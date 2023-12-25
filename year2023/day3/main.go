@@ -8,16 +8,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/oeuftete/advent-of-code-golang/utils"
 	"github.com/rs/zerolog/log"
 )
-
-func makeRange(min, max int) []int {
-	a := make([]int, max-min+1)
-	for i := range a {
-		a[i] = min + i
-	}
-	return a
-}
 
 type Coordinate struct {
 	x int
@@ -43,8 +36,8 @@ func (s *Schematic) answerA() int {
 		log.Debug().Msgf("Looking at [%d] (%d,%d)", n, cn.x, cn.y)
 		// Look at all the coordinates from cn.x-1 to cn.x+len(n)
 	symbol_search:
-		for _, x := range makeRange(cn.x-1, cn.x+len(strconv.Itoa(n))) {
-			for _, y := range makeRange(cn.y-1, cn.y+1) {
+		for _, x := range utils.MakeRange(cn.x-1, cn.x+len(strconv.Itoa(n))) {
+			for _, y := range utils.MakeRange(cn.y-1, cn.y+1) {
 				log.Debug().Msgf("Checking for symbol at (%d,%d)", x, y)
 				symbol, ok := s.symbols[Coordinate{x, y}]
 				if ok {
@@ -68,8 +61,8 @@ func (s *Schematic) answerB() int {
 	possibleGears := make(map[Coordinate]PossibleGear)
 
 	for cn, n := range s.numbers {
-		for _, x := range makeRange(cn.x-1, cn.x+len(strconv.Itoa(n))) {
-			for _, y := range makeRange(cn.y-1, cn.y+1) {
+		for _, x := range utils.MakeRange(cn.x-1, cn.x+len(strconv.Itoa(n))) {
+			for _, y := range utils.MakeRange(cn.y-1, cn.y+1) {
 				log.Debug().Msgf("Checking for symbol at (%d,%d)", x, y)
 				if symbol, ok := s.symbols[Coordinate{x, y}]; ok && symbol == '*' {
 					log.Debug().Msgf("Found possible gear at (%d,%d)", x, y)
