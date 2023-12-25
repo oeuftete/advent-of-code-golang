@@ -6,13 +6,21 @@ import (
 	"fmt"
 	"regexp"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/rs/zerolog/log"
 	"golang.org/x/exp/maps"
 )
+
+// TODO: extract to helper.
+func makeRange(min, max int) []int {
+	a := make([]int, max-min+1)
+	for i := range a {
+		a[i] = min + i
+	}
+	return a
+}
 
 type GameCard struct {
 	id      int
@@ -25,6 +33,20 @@ func NewGameCard() GameCard {
 	gc.winners = make(map[int]bool)
 	gc.mine = make(map[int]bool)
 	return gc
+}
+
+func (gc *GameCard) nWinners() (nWinners int) {
+	nWinners = 0
+
+	mine := maps.Keys(gc.mine)
+	winners := maps.Keys(gc.winners)
+
+	for _, n := range mine {
+		if slices.Contains(winners, n) {
+			nWinners++
+		}
+	}
+	return nWinners
 }
 
 func parseCards(in string) (gameCards []GameCard) {
@@ -58,30 +80,55 @@ func parseCards(in string) (gameCards []GameCard) {
 func answers(in string) (answerA, answerB int) {
 	gameCards := parseCards(in)
 
-	answerA = 0
+	answerA = exponentialGame(gameCards)
+	answerB = moreCardsGame(gameCards)
+	return answerA, answerB
+}
+
+func moreCardsGame(gameCards []GameCard) (score int) {
+	score = 0
+
+	type GameCardSlot struct {
+		gc     GameCard
+		copies int
+	}
+
+	gameCardMap := make(map[int]GameCardSlot)
+
+	for _, gameCard := range gameCards {
+		gameCardMap[gameCard.id] = GameCardSlot{gameCard, 1}
+	}
+
+	for _, gameCard := range gameCards {
+		nWinners := gameCard.nWinners()
+		for i := 0; i < gameCardMap[gameCard.id].copies; i++ {
+			for _, j := range makeRange(gameCard.id+1, gameCard.id+nWinners) {
+				nCopies := gameCardMap[j].copies + 1
+				gameCardMap[j] = GameCardSlot{gameCardMap[j].gc, nCopies}
+			}
+		}
+	}
+
+	for _, slot := range gameCardMap {
+		score += slot.copies
+	}
+
+	return score
+}
+
+func exponentialGame(gameCards []GameCard) (score int) {
+	score = 0
 
 	for _, gameCard := range gameCards {
 		cardScore := uint(0)
-
-		mine := maps.Keys(gameCard.mine)
-		sort.Ints(mine)
-
-		winners := maps.Keys(gameCard.winners)
-		sort.Ints(winners)
-
-		for _, n := range mine {
-			if slices.Contains(winners, n) {
-				if cardScore == 0 {
-					cardScore = 1
-				} else {
-					cardScore <<= 1
-				}
-			}
+		nWinners := gameCard.nWinners()
+		if nWinners > 0 {
+			cardScore = 1 << (nWinners - 1)
 		}
-		answerA += int(cardScore)
-		log.Debug().Int("answer", answerA).Msg("Current running score")
+		score += int(cardScore)
+		log.Debug().Int("answer", score).Msg("Current running score")
 	}
-	return answerA, answerB
+	return score
 }
 
 //go:embed input.txt

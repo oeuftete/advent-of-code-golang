@@ -16,6 +16,7 @@ Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
 Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
 `
 	ExampleOneAnswerA int = 13
+	ExampleOneAnswerB int = 30
 )
 
 func TestAnswers(t *testing.T) {
@@ -23,18 +24,21 @@ func TestAnswers(t *testing.T) {
 		name    string
 		input   string
 		answerA int
+		answerB int
 	}{
 		{
 			name:    "example one answer",
 			input:   ExampleOne,
 			answerA: ExampleOneAnswerA,
+			answerB: ExampleOneAnswerB,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			answerA, _ := answers(test.input)
+			answerA, answerB := answers(test.input)
 			assert.Equal(t, test.answerA, answerA, "Answer A incorrect")
+			assert.Equal(t, test.answerB, answerB, "Answer B incorrect")
 		})
 	}
 }
