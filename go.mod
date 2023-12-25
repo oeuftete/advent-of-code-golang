@@ -5,6 +5,7 @@ go 1.21.4
 require (
 	github.com/rs/zerolog v1.31.0
 	github.com/stretchr/testify v1.8.4
+	golang.org/x/exp v0.0.0-20231219180239-dc181d75b848
 )
 
 require (
