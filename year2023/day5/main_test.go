@@ -43,7 +43,7 @@ humidity-to-location map:
 56 93 4
 `
 	ExampleOneAnswerA int = 35
-	ExampleOneAnswerB int = 0
+	ExampleOneAnswerB int = 46
 )
 
 func TestAnswers(t *testing.T) {

@@ -31,7 +31,7 @@ func NewAlmanac() (a Almanac) {
 	return a
 }
 
-func parseAlmanac(in string) Almanac {
+func parseAlmanac(in string, isPartB bool) Almanac {
 	inputStrings := strings.Split(strings.TrimSpace(in), "\n")
 	almanac := NewAlmanac()
 
@@ -40,9 +40,14 @@ func parseAlmanac(in string) Almanac {
 	reWS := regexp.MustCompile(`\s+`)
 	_, seeds, _ := strings.Cut(seedLine, ": ")
 
-	for _, s := range reWS.Split(seeds, -1) {
-		seed, _ := strconv.Atoi(s)
-		almanac.seeds = append(almanac.seeds, seed)
+	if isPartB {
+		// TODO: Just parsing the seed lines and setting the seeds individually
+		// will not scale.  Re-think the whole approach!
+	} else {
+		for _, s := range reWS.Split(seeds, -1) {
+			seed, _ := strconv.Atoi(s)
+			almanac.seeds = append(almanac.seeds, seed)
+		}
 	}
 
 	reMapStart := regexp.MustCompile(`(\w+)-to-(\w+) map:`)
@@ -80,7 +85,7 @@ func parseAlmanac(in string) Almanac {
 	return almanac
 }
 
-func (a *Almanac) answerA() int {
+func (a *Almanac) answer() int {
 	locations := make([]int, 0, len(a.seeds))
 	source := InitialSource
 
@@ -120,10 +125,11 @@ func (a *Almanac) answerA() int {
 var aocInput string
 
 func answers(in string) (answerA, answerB int) {
-	almanac := parseAlmanac(in)
+	almanacA := parseAlmanac(in, false)
+	answerA = almanacA.answer()
 
-	answerA = almanac.answerA()
-	answerB = 0
+	almanacB := parseAlmanac(in, true)
+	answerB = almanacB.answer()
 	return answerA, answerB
 }
 
