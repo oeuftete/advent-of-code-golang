@@ -1,7 +1,9 @@
 run:
   deadline: 1m
   tests: false
-  skip-files:
+
+issues:
+  exclude-files:
     - "testing.go"
     - ".*\\.pb\\.go"
     - ".*\\.gen\\.go"
