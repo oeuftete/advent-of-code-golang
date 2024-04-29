@@ -19,7 +19,7 @@ jobs:
           go-version: ${{ matrix.golang }}
       - name: input workaround
         run: for d in year*/*; do touch "$d/input.txt"; done
-      - uses: golangci/golangci-lint-action@v4
+      - uses: golangci/golangci-lint-action@v5
         with:
           version: ${{ matrix.golangci_lint }}
           args: --timeout=2m
