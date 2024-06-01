@@ -3,7 +3,7 @@ module github.com/oeuftete/advent-of-code-golang
 go 1.21.4
 
 require (
-	github.com/rs/zerolog v1.32.0
+	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f
 )
