@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        golangci_lint: [v1.57.2]
-        golang: [1.22.2]
+        golangci_lint: [v1.59.0]
+        golang: [1.22.3]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        golang: [1.22.2]
+        golang: [1.22.3]
     env:
       OS: ubuntu-latest
       GOLANG: ${{ matrix.golang }}
