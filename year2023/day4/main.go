@@ -93,7 +93,7 @@ func moreCardsGame(gameCards []GameCard) (score int) {
 
 	for _, gameCard := range gameCards {
 		nWinners := gameCard.nWinners()
-		for i := 0; i < gameCardMap[gameCard.id].copies; i++ {
+		for range gameCardMap[gameCard.id].copies {
 			for _, j := range utils.MakeRange(gameCard.id+1, gameCard.id+nWinners) {
 				nCopies := gameCardMap[j].copies + 1
 				gameCardMap[j] = GameCardSlot{gameCardMap[j].gc, nCopies}
@@ -112,12 +112,12 @@ func exponentialGame(gameCards []GameCard) (score int) {
 	score = 0
 
 	for _, gameCard := range gameCards {
-		cardScore := uint(0)
+		cardScore := int(0)
 		nWinners := gameCard.nWinners()
 		if nWinners > 0 {
 			cardScore = 1 << (nWinners - 1)
 		}
-		score += int(cardScore)
+		score += cardScore
 		log.Debug().Int("answer", score).Msg("Current running score")
 	}
 	return score
