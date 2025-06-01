@@ -1,9 +1,9 @@
 package utils
 
-func MakeRange(min, max int) []int {
-	a := make([]int, max-min+1)
+func MakeRange(imin int, imax int) []int {
+	a := make([]int, imax-imin+1)
 	for i := range a {
-		a[i] = min + i
+		a[i] = imin + i
 	}
 	return a
 }
